@@ -1,9 +1,5 @@
 export interface Passive {
-
-    id: string;
-
+    id?: string;
     name: string;
-
     description: string;
-
 }

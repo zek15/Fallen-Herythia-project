@@ -1,5 +1,7 @@
 import type { Character } from "../../core/types/Character";
 
+import { BattleEvent } from "../../core/events/BattleEvents";
+
 export const Friedrich: Character = {
     id: "friedrich",
     name: "Friedrich",
@@ -14,14 +16,28 @@ export const Friedrich: Character = {
 
     passives: [
         {
-            name: "Mateh",
-            description:
-                "60% de chance de contre-attaquer (Décharge de résistance) quand le lanceur subit des dégâts d'une attaque ennemie. Le TU du contre n'est pas appliqué.",
+    name: "Mateh",
+    description:
+        "60% de chance de contre-attaquer (Décharge de résistance) quand le lanceur subit des dégâts d'une attaque ennemie. Le TU du contre n'est pas appliqué.",
+    onEvent: {
+        [BattleEvent.DAMAGE]: (self, { target }) => {
+            if (target.id === self.id && Math.random() < 0.6) {
+                console.log(`${self.name} contre-attaque grâce à Mateh !`);
+            }
         },
+    },
+},
         {
             name: "Tenir bon",
             description:
                 "Survit avec 1 PV sur dégâts mortels, ne peut mourir jusqu'à la fin de son prochain tour. Une fois par entrée sur le terrain.",
+            onEvent: {
+                [BattleEvent.DEATH]: (self) => {
+                    if (self.hp <= 0) {
+                        console.log(`${self.name} survit grâce à Tenir bon !`);
+                    }
+                },
+            },
         },
     ],
 

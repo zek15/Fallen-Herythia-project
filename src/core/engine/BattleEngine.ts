@@ -3,6 +3,7 @@ import type { Skill } from "../types/Skill";
 import { DamageEngine } from "./DamageEngine";
 import { EventBus } from "../events/EventBus";
 import { BattleEvent, type BattleEventPayloads } from "../events/BattleEvents";
+import { TurnEngine, type TurnState } from "./TurnEngine";
 
 /**
  * BattleEngine ne connaît PAS le détail des passifs ou des statuts.
@@ -30,4 +31,16 @@ export class BattleEngine {
             this.bus.emit(BattleEvent.DEATH, { unit: target });
         }
     }
+
+    /**
+     * Termine le tour de l'acteur : reçoit tuCost, le coût EXACT déjà
+     * calculé et affiché au joueur lors de la sélection de la compétence
+     * (via TurnEngine.computeSkillTuCost) — jamais recalculé ici, pour
+     * garantir que le TU stocké est identique à celui qui a été montré.
+     */
+    endTurn(actorState: TurnState, tuCost: number): void {
+        TurnEngine.advance(actorState, tuCost);
+        this.bus.emit(BattleEvent.TURN_END, { unit: actorState.character });
+    }
 }
+ 

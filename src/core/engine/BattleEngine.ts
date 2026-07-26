@@ -43,4 +43,3 @@ export class BattleEngine {
         this.bus.emit(BattleEvent.TURN_END, { unit: actorState.character });
     }
 }
- 
